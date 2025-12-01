@@ -155,6 +155,18 @@ declare global {
         peRatio?: string;
     };
 
+    type WatchlistResponse = {
+        success: boolean;
+        data?: WatchlistItem[];
+        error?: string;
+    };
+
+    type AddToWatchlistResponse = {
+        success: boolean;
+        message?: string;
+        error?: string;
+    };
+
     type AlertsListProps = {
         alertData: Alert[] | undefined;
     };

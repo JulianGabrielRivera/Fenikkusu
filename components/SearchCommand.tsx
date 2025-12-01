@@ -11,6 +11,7 @@ import { Loader2, Star, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { useDebounce } from "@/hooks/useDebounce";
+import { addToWatchList } from "@/lib/actions/watchlist.actions";
 
 export default function SearchCommand({
   renderAs = "button",
@@ -117,7 +118,13 @@ export default function SearchCommand({
                         {stock.symbol} | {stock.exchange} | {stock.type}
                       </div>
                     </div>
-                    <Star />
+                    <Star
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        addToWatchList(stock.symbol, stock.name);
+                      }}
+                    />
                   </Link>
                 </li>
               ))}
