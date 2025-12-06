@@ -12,6 +12,7 @@ import Link from "next/link";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { useDebounce } from "@/hooks/useDebounce";
 import { addToWatchList } from "@/lib/actions/watchlist.actions";
+import { toast } from "sonner";
 
 export default function SearchCommand({
   renderAs = "button",
@@ -119,10 +120,21 @@ export default function SearchCommand({
                       </div>
                     </div>
                     <Star
-                      onClick={(e) => {
+                      className="hover:fill-yellow-400 hover:text-yellow-400 hover:scale-110 transition-all duration-200 cursor-pointer"
+                      onClick={async (e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        addToWatchList(stock.symbol, stock.name);
+                        try {
+                          const result = await addToWatchList(stock.symbol, stock.name);
+                          if (result.success) {
+                            toast.success(result.message || "Stock added to watchlist successfully!");
+                          } else {
+                            toast.error(result.error || "Failed to add stock to watchlist");
+                          }
+                        } catch (error) {
+                          console.error("Error adding to watchlist:", error);
+                          toast.error("Failed to add stock to watchlist");
+                        }
                       }}
                     />
                   </Link>

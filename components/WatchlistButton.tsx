@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { addToWatchList, removeFromWatchList } from "@/lib/actions/watchlist.actions";
+import {
+  addToWatchList,
+  removeFromWatchList,
+} from "@/lib/actions/watchlist.actions";
 import { toast } from "sonner";
 
 const WatchlistButton = ({

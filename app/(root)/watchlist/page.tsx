@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 
 const WatchList = async () => {
   const response = await getUserSpecificWatchListByEmail();
@@ -39,52 +40,54 @@ const WatchList = async () => {
         </TableHeader>
         <TableBody>
           {watchListData?.map((stock: WatchlistItem) => (
-            <TableRow key={String(stock._id)}>
-              <TableCell className="font-bold text-center">
-                {stock.symbol}
-              </TableCell>
-              <TableCell
-                className={`${
-                  stock.company === "Microsoft Corp"
-                    ? "text-center pl-11"
-                    : "text-center"
-                }`}
-              >
-                {stock.company}
-              </TableCell>
-              <TableCell className="text-center">
-                {stock.priceFormatted ||
-                  stock.currentPrice?.toFixed(2) ||
-                  "N/A"}
-              </TableCell>
-              <TableCell
-                className={`text-center ${
-                  stock.changePercent && stock.changePercent >= 0
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {stock.changePercent
-                  ? `${stock.changePercent.toFixed(2)}%`
-                  : "N/A"}
-              </TableCell>
-              <TableCell
-                className={`text-center ${
-                  stock.changeFormatted?.includes("+")
-                    ? "text-green-600"
-                    : stock.changeFormatted?.includes("-")
-                    ? "text-red-600"
-                    : ""
-                }`}
-              >
-                {stock.changeFormatted || "N/A"}
-              </TableCell>
-              <TableCell className="text-center">
-                {stock.marketCap || "N/A"}
-              </TableCell>
-              <TableCell className="text-center">
-                {stock.peRatio || "N/A"}
-              </TableCell>
+            <TableRow key={String(stock._id)} className="cursor-pointer">
+              <Link href={`/stocks/${stock.symbol}`} className="contents">
+                <TableCell className="font-bold text-center">
+                  {stock.symbol}
+                </TableCell>
+                <TableCell
+                  className={`${
+                    stock.company === "Microsoft Corp"
+                      ? "text-center pl-11"
+                      : "text-center"
+                  }`}
+                >
+                  {stock.company}
+                </TableCell>
+                <TableCell className="text-center">
+                  {stock.priceFormatted ||
+                    stock.currentPrice?.toFixed(2) ||
+                    "N/A"}
+                </TableCell>
+                <TableCell
+                  className={`text-center ${
+                    stock.changePercent && stock.changePercent >= 0
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {stock.changePercent
+                    ? `${stock.changePercent.toFixed(2)}%`
+                    : "N/A"}
+                </TableCell>
+                <TableCell
+                  className={`text-center ${
+                    stock.changeFormatted?.includes("+")
+                      ? "text-green-600"
+                      : stock.changeFormatted?.includes("-")
+                      ? "text-red-600"
+                      : ""
+                  }`}
+                >
+                  {stock.changeFormatted || "N/A"}
+                </TableCell>
+                <TableCell className="text-center">
+                  {stock.marketCap || "N/A"}
+                </TableCell>
+                <TableCell className="text-center">
+                  {stock.peRatio || "N/A"}
+                </TableCell>
+              </Link>
             </TableRow>
           ))}
         </TableBody>
