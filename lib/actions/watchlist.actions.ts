@@ -144,3 +144,31 @@ export async function getUserSpecificWatchListByEmail(): Promise<WatchlistRespon
     return { success: false, error: 'Failed to fetch watchlist' };
   }
 }
+
+export async function removeFromWatchList(symbol: string): Promise<AddToWatchlistResponse> {
+  try {
+    const { auth } = await import('@/lib/better-auth/auth');
+    const session = await auth.api.getSession({ headers: await import('next/headers').then(h => h.headers()) });
+
+    if (!session?.user?.id) {
+      return { success: false, error: 'User not authenticated' };
+    }
+
+    await connectToDatabase();
+
+    // Find and remove the stock from the watchlist
+    const deletedItem = await Watchlist.findOneAndDelete({
+      userId: session.user.id,
+      symbol: symbol.toUpperCase()
+    });
+
+    if (!deletedItem) {
+      return { success: false, error: 'Stock not found in watchlist' };
+    }
+
+    return { success: true, message: 'Stock removed from watchlist successfully' };
+  } catch (err) {
+    console.error('removeFromWatchList error:', err);
+    return { success: false, error: 'Failed to remove stock from watchlist' };
+  }
+}

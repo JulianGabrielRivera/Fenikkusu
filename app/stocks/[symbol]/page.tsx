@@ -8,10 +8,17 @@ import {
   TECHNICAL_ANALYSIS_WIDGET_CONFIG,
 } from "@/lib/constants";
 import WatchlistButton from "@/components/WatchlistButton";
+import { getUserSpecificWatchListByEmail } from "@/lib/actions/watchlist.actions";
 
-export default function StockPage({ params }) {
+export default async function StockPage({ params }) {
   const { symbol } = params;
   const scriptUrl = `https://s3.tradingview.com/external-embedding/embed-widget-`;
+
+  // Check if stock is in user's watchlist
+  const watchlistResponse = await getUserSpecificWatchListByEmail();
+  const isInWatchlist = watchlistResponse.success
+    ? watchlistResponse.data?.some(item => item.symbol === symbol.toUpperCase()) ?? false
+    : false;
 
   return (
     <div className="flex min-h-screen p-4 md:p-6 lg:p-8">
@@ -42,8 +49,8 @@ export default function StockPage({ params }) {
           <div className="flex items-center justify-between">
             <WatchlistButton
               symbol={symbol.toUpperCase()}
-              company={symbol.toUpperCase()}
-              isInWatchlist={false}
+              company={symbol.toUpperCase()} // Will be enhanced with real company name from API
+              isInWatchlist={isInWatchlist}
             />
           </div>
 

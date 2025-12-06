@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import { addToWatchList, removeFromWatchList } from "@/lib/actions/watchlist.actions";
+import { toast } from "sonner";
 
 const WatchlistButton = ({
   symbol,
@@ -16,10 +18,35 @@ const WatchlistButton = ({
     return added ? "Remove from Watchlist" : "Add to Watchlist";
   }, [added, type]);
 
-  const handleClick = () => {
-    const next = !added;
-    setAdded(next);
-    onWatchlistChange?.(symbol, next);
+  const handleClick = async () => {
+    try {
+      if (added) {
+        // Remove from watchlist
+        const result = await removeFromWatchList(symbol);
+
+        if (result.success) {
+          setAdded(false);
+          toast.success(result.message || "Stock removed from watchlist!");
+          onWatchlistChange?.(symbol, false);
+        } else {
+          toast.error(result.error || "Failed to remove stock from watchlist");
+        }
+      } else {
+        // Add to watchlist
+        const result = await addToWatchList(symbol, company);
+
+        if (result.success) {
+          setAdded(true);
+          toast.success(result.message || "Stock added to watchlist!");
+          onWatchlistChange?.(symbol, true);
+        } else {
+          toast.error(result.error || "Failed to add stock to watchlist");
+        }
+      }
+    } catch (error) {
+      console.error("Error with watchlist operation:", error);
+      toast.error("Failed to update watchlist");
+    }
   };
 
   if (type === "icon") {
